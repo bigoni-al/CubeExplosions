@@ -11,14 +11,15 @@ public class Dyer : MonoBehaviour
     private void Awake()
     {
         _renderer = GetComponent<Renderer>();
-        Point();
+        ChangeColor();
     }
 
-    public void Point()
+    public void ChangeColor()
     {
-        Color newColor = new Color(Random.Range(_colorComponentMin, _colorComponentMax),
+        Color newColor = new(Random.Range(_colorComponentMin, _colorComponentMax),
             Random.Range(_colorComponentMin, _colorComponentMax),
             Random.Range(_colorComponentMin, _colorComponentMax), _alfaComponent);
         _renderer.material.color = newColor;
     }
+
 }

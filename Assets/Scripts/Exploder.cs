@@ -1,33 +1,43 @@
+using System.Collections;
 using UnityEngine;
 
 public class Exploder : MonoBehaviour
 {
     [SerializeField] private float _explosionRadius = 20;
-    [SerializeField] private float _explosionForce = 1000;
-    [SerializeField] private Splitter _splitter;
+    [SerializeField] private float _explosionForce = 700;
+    [SerializeField] private float _delayExplosion = 0.2f;
 
-    private void OnEnable()
+    private Vector3 _explosionPosition;
+
+    private WaitForSecondsRealtime _wait;
+
+    private void Awake()
     {
-        _splitter.CubeSplitted += Explode;
+        _wait = new WaitForSecondsRealtime(_delayExplosion);
     }
 
-    private void OnDisable()
+    public IEnumerator LaunchDetonation()
     {
-        _splitter.CubeSplitted -= Explode;
+        yield return _wait;
+
+        Explode();
     }
 
-    public void Explode() 
+    private void Explode()
     {
-        Collider[] hits = Physics.OverlapSphere(_splitter.CurrentPosition.transform.position, _explosionRadius);
+        Collider[] hits = Physics.OverlapSphere(_explosionPosition, _explosionRadius);
 
         foreach (Collider hit in hits)
         {
-            Rigidbody rigidbody = hit.GetComponent<Rigidbody>();
-
-            if (rigidbody != null)
+            if (hit.TryGetComponent<Rigidbody>(out var rigidbody))
             {
-                rigidbody.AddExplosionForce(_explosionForce, _splitter.CurrentPosition.transform.position, _explosionRadius);
+                rigidbody.AddExplosionForce(_explosionForce, _explosionPosition, _explosionRadius);
             }
         }
+    }
+
+    public void RememberCenterExplosion(Vector3 explosionPosition)
+    {
+        _explosionPosition = explosionPosition;
     }
 }
