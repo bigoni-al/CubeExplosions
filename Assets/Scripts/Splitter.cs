@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class Splitter : MonoBehaviour
@@ -8,6 +9,8 @@ public class Splitter : MonoBehaviour
 
     private int _luckSplitMin = 0;
     private int _luckSplitMax = 100;
+
+    public event Action<Cube> CubeNotSplitted;
 
     private void OnEnable()
     {
@@ -21,11 +24,15 @@ public class Splitter : MonoBehaviour
 
     private void TrySplitCube(Cube cube)
     {
-        int randomLuckSplit = Random.Range(_luckSplitMin, _luckSplitMax + 1);
+        int randomLuckSplit = UnityEngine.Random.Range(_luckSplitMin, _luckSplitMax + 1);
 
         if (randomLuckSplit <= cube.LuckSplit)
         {
             _spawner.CreateCubes(cube);
+        }
+        else 
+        {
+            CubeNotSplitted?.Invoke(cube);
         }
 
         Destroy(cube.gameObject);    
