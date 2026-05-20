@@ -4,16 +4,23 @@ using UnityEngine;
 [RequireComponent(typeof(MeshRenderer))]
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(Dyer))]
 
 public class Cube : MonoBehaviour
 {
-    [SerializeField] private int _currentPercentLuckSplit = 100;
+    [SerializeField] private int _luckSplit = 100;
 
-    public int CurrentPercentLuckSplit => _currentPercentLuckSplit;
+    private Renderer _renderer;
 
-    public void ChangePercentLuck(int newPercentLuckSplit)
+    public int LuckSplit => _luckSplit;
+
+    private void Awake()
     {
-        _currentPercentLuckSplit = newPercentLuckSplit;
+        _renderer = GetComponent<Renderer>();
+        _renderer.material.color = Random.ColorHSV();
+    }
+
+    public void ChangeLuckSplit(int newLuckSplit)
+    {
+        _luckSplit = newLuckSplit;
     }
 }
