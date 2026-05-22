@@ -1,33 +1,18 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Exploder : MonoBehaviour
 {
-    [SerializeField] private Splitter _splitter;
+    [SerializeField] private float _pushRadius = 20;
+    [SerializeField] private float _pushForce = 700;
 
-    private void OnEnable()
+    public void Explode(List<Cube> cubes, Vector3 positionPush)
     {
-        _splitter.CubeNotSplitted += Explode;
-    }
-
-    private void OnDisable()
-    {
-        _splitter.CubeNotSplitted -= Explode;
-    }
-
-    public void Explode(Cube cube)
-    {
-        float explosionRadius = cube.GetComponent<Explosives>().ExplosionRadius;
-        float explosionForce = cube.GetComponent<Explosives>().ExplosionForce;
-
-        Collider[] hits = Physics.OverlapSphere(cube.transform.position, explosionRadius);
-
-        foreach (Collider hit in hits)
+        foreach (Cube cube in cubes)
         {
-            if (hit.TryGetComponent(out Rigidbody rigidbody))
+            if (cube.TryGetComponent(out Rigidbody rigidbody))
             {
-                rigidbody.AddExplosionForce(explosionForce, cube.transform.position, explosionRadius);
+                rigidbody.AddExplosionForce(_pushForce, positionPush, _pushRadius);
             }
         }
     }

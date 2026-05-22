@@ -1,40 +1,47 @@
-using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Splitter : MonoBehaviour
 {
+    [SerializeField] private Camera _camera;
+    [SerializeField] private InputHandler _inputHendler;
     [SerializeField] private RaySender _raySender;
     [SerializeField] private Spawner _spawner;
-    [SerializeField] private Pusher _pusher;
+    [SerializeField] private Exploder _exploder;
 
-    private int _luckSplitMin = 0;
-    private int _luckSplitMax = 100;
-
-    public event Action<Cube> CubeNotSplitted;
+    private int _chanceSplitMin = 0;
+    private int _chanceSplitMax = 100;
 
     private void OnEnable()
     {
-        _raySender.CubeFounded += TrySplitCube;
+        _inputHendler.ButtonPressed += TryGetCube;
     }
 
     private void OnDisable()
     {
-        _raySender.CubeFounded -= TrySplitCube;
+        _inputHendler.ButtonPressed += TryGetCube;
+    }
+
+    private void TryGetCube(Vector3 mousePosition)
+    {
+        Cube cube = _raySender.FindCube(_camera, mousePosition);
+
+        if (cube != null)
+        {
+            TrySplitCube(cube);
+        }
     }
 
     private void TrySplitCube(Cube cube)
     {
-        int randomLuckSplit = UnityEngine.Random.Range(_luckSplitMin, _luckSplitMax + 1);
+        int randomChanceSplit = Random.Range(_chanceSplitMin, _chanceSplitMax + 1);
 
-        if (randomLuckSplit <= cube.LuckSplit)
+        if (randomChanceSplit <= cube.ChanceSplit)
         {
-            _spawner.CreateCubes(cube);
-        }
-        else 
-        {
-            CubeNotSplitted?.Invoke(cube);
+            List<Cube> newCubes = _spawner.CreateCubes(cube);
+            _exploder.Explode(newCubes, cube.transform.position);
         }
 
-        Destroy(cube.gameObject);    
+        _spawner.DestroyCube(cube);
     }
 }

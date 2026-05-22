@@ -5,18 +5,14 @@ using UnityEngine;
 [RequireComponent(typeof(BoxCollider))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Dyer))]
-[RequireComponent(typeof(Explosives))]
-
 public class Cube : MonoBehaviour
 {
-    [SerializeField] private int _luckSplit = 100;
+    [SerializeField] private int _chanceSplit = 100;
 
-    //private Vector3 _position;
+    public int ChanceSplit => _chanceSplit;
 
-    public int LuckSplit => _luckSplit;
-
-    public void ChangeLuckSplit(int newLuckSplit)
+    public void ChangeChanceSplit(int newChanceSplit)
     {
-        _luckSplit = newLuckSplit;
+        _chanceSplit = newChanceSplit;
     }
 }

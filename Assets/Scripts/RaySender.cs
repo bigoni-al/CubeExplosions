@@ -1,30 +1,21 @@
-using System;
 using UnityEngine;
 
 public class RaySender : MonoBehaviour
 {
-    [SerializeField] private InputHandler _inputHandler;
+    private Ray _ray;
 
-    public event Action<Cube> CubeFounded;
-
-    private void OnEnable()
+    public Cube FindCube(Camera camera, Vector3 mousePosition)
     {
-        _inputHandler.ButtonPressed += FindCube;
-    }
+        _ray = camera.ScreenPointToRay(mousePosition);
 
-    private void OnDisable()
-    {
-        _inputHandler.ButtonPressed -= FindCube;
-    }
-
-    private void FindCube(Ray ray) 
-    {
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity))
+        if (Physics.Raycast(_ray, out RaycastHit hit, Mathf.Infinity))
         {
             if (hit.collider.TryGetComponent(out Cube cube))
             {
-                CubeFounded?.Invoke(cube);
+                return cube;
             }
         }
+
+        return null;
     }
 }
